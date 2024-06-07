@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Kasir Makanan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .struk-container {
+            display: none;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .struk {
+            white-space: pre-wrap;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Menu Kasir Makanan</h1>
+    <table>
+        <tr>
+            <th>Makanan</th>
+            <th>Harga</th>
+            <th>Jumlah</th>
+            <th>Subtotal</th>
+        </tr>
+        <tr>
+            <td>Nasi Goreng</td>
+            <td>Rp. 15000</td>
+            <td><input type="number" class="jumlah" id="nasi_goreng" value="0" onchange="hitungSubtotal('nasi_goreng', 15000)"></td>
+            <td id="subtotal_nasi_goreng">Rp. 0</td>
+        </tr>
+        <tr>
+            <td>Mie Goreng</td>
+            <td>Rp. 12000</td>
+            <td><input type="number" class="jumlah" id="mie_goreng" value="0" onchange="hitungSubtotal('mie_goreng', 12000)"></td>
+            <td id="subtotal_mie_goreng">Rp. 0</td>
+        </tr>
+        <tr>
+            <td>Ayam Goreng</td>
+            <td>Rp. 20000</td>
+            <td><input type="number" class="jumlah" id="ayam_goreng" value="0" onchange="hitungSubtotal('ayam_goreng', 20000)"></td>
+            <td id="subtotal_ayam_goreng">Rp. 0</td>
+        </tr>
+        <tr>
+            <td>Es Teh</td>
+            <td>Rp. 5000</td>
+            <td><input type="number" class="jumlah" id="es_teh" value="0" onchange="hitungSubtotal('es_teh', 5000)"></td>
+            <td id="subtotal_es_teh">Rp. 0</td>
+        </tr>
+        <tr>
+            <td colspan="3"><strong>Total belanja</strong></td>
+            <td id="total_belanja" class="total"><strong>Rp. 0</strong></td>
+        </tr>
+    </table>
+
+    <button onclick="cetakStruk()">Cetak Struk</button>
+
+    <div class="struk-container" id="strukContainer">
+        <div class="struk" id="struk"></div>
+    </div>
+<footer style="text-align: center; margin-top: 20px; background-color: #f2f2f2; padding: 10px;">
+    &copy; RonaldoGiovni XI RPL
+</footer>
+
+        <script>
+    function hitungSubtotal(id, harga) {
+        var jumlah = document.getElementById(id).value;
+        var subtotal = jumlah * harga;
+        document.getElementById('subtotal_' + id).innerText = 'Rp. ' + subtotal;
+        hitungTotal();
+    }
+
+    function hitungTotal() {
+        var subtotals = document.getElementsByClassName('jumlah');
+        var total_belanja = 0;
+        for (var i = 0; i < subtotals.length; i++) {
+            var harga = subtotals[i].id;
+            harga = harga.replace('_','').replace('nasi','15000').replace('mie','12000').replace('ayam','20000').replace('es','5000');
+            harga = parseInt(harga);
+            total_belanja += subtotals[i].value * harga;
+        }
+        document.getElementById('total_belanja').innerText = 'Rp. ' + total_belanja;
+    }
+
+    function cetakStruk() {
+        var struk = "<h2>=== Struk Pembelian ===</h2>";
+        var subtotals = document.getElementsByClassName('jumlah');
+        var adaPesanan = false;
+        for (var i = 0; i < subtotals.length; i++) {
+            var jumlah = subtotals[i].value;
+            if (jumlah > 0) {
+                adaPesanan = true;
+                var makanan = subtotals[i].parentNode.parentNode.childNodes[0].innerText;
+                var harga = subtotals[i].parentNode.parentNode.childNodes[1].innerText;
+                var subtotal = subtotals[i].parentNode.parentNode.childNodes[3].innerText;
+                struk += "<p>" + makanan + " - " + harga + " - " + jumlah + " - " + subtotal + "</p>";
+            }
+        }
+        if (!adaPesanan) {
+            alert("Belum ada pesanan untuk dicetak.");
+            return;
+        }
+        struk += "<p><strong>Total belanja: " + document.getElementById('total_belanja').innerText + "</strong></p>";
+        document.getElementById('struk').innerHTML = struk;
+        document.getElementById('strukContainer').style.display = 'block';
+    }
+</script>
